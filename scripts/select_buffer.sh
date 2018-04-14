@@ -2,7 +2,19 @@
 
 # Paste selected tmux buffer
 
-buffer=$(tmux list-buffers | fzf-tmux --exit-0 | cut -d: -f1)
-if [[ $buffer ]]; then
-    tmux paste-buffer -b "$buffer"
-fi
+select_buffer() {
+    local select_command="$1"
+    local buffer
+
+    buffer=$(tmux list-buffers | $select_command | cut -d: -f1)
+    if [[ $buffer ]]; then
+        tmux paste-buffer -b "$buffer"
+    fi
+}
+
+
+main() {
+    select_buffer "$@"
+}
+
+main "$@"

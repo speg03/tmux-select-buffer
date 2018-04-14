@@ -2,28 +2,13 @@
 
 CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-
-get_tmux_option() {
-    local option_name="$1"
-    local default_option_value="$2"
-    local option_value
-
-    option_value=$(tmux show-option -gqv "$option_name")
-    if [[ $option_value ]]; then
-        echo "$option_value"
-    else
-        echo "$default_option_value"
-    fi
-}
+# shellcheck source=scripts/options.sh
+source "${CURRENT_DIR}/scripts/options.sh"
 
 
 select_buffer_bindings() {
-    local key
-    local script
-
-    key=$(get_tmux_option "@select-buffer-key" "=")
-    script="$CURRENT_DIR/scripts/select_buffer.sh"
-    tmux bind-key "$key" run-shell "$script"
+    local script="${CURRENT_DIR}/scripts/select_buffer.sh"
+    tmux bind-key "$(key_option)" run-shell "${script} '$(command_option)'"
 }
 
 
